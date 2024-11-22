@@ -43,32 +43,42 @@ function App() {
     getPlanets();
   }, []);
 
-  const info = [];
-
-  if (Array.isArray(people) && people.length > 0) {
-    people.forEach(ppl => {
-
-      if (Array.isArray(planets) && planets.length > 0) {
-        planets.forEach(plan => {
-        if (plan.id === ppl.homeworld) {
-          const res1 = {id: ppl.id, name: ppl.name, homeworld_id: ppl.homeworld, homeworld: {id: plan.id, name: plan.name}};
-          info.push(res1)
+  useEffect(() => {
+    if (Array.isArray(people) && people.length > 0) {
+      people.forEach(ppl => {
+        if (Array.isArray(planets) && planets.length > 0) {
+          planets.forEach(plan => {
+          if (plan.id === ppl.homeworld) {
+            const res1 = {ppl, plan};
+            setAllInfo(prev => [...prev, res1]);
+          }
+          })
         }
-        })
-      }
-    });
-    console.log('Info from people: ', info);
-  } else {
-    console.log('No People Data :(');
-  }
+      });
+    } else {
+      console.log('No People Data :(');
+    }
+  }, [people, planets])
 
-  
+  useEffect(() => {
+    console.log('All info: ', allInfo)
+  }, [allInfo])
 
   return (
     <div>
       <h2>Star Wars Characters</h2>
       <p>See the README of the project for instructions on completing this challenge</p>
       {/* ❗ Map over the data in state, rendering a Character at each iteration */}
+      {
+        allInfo.map(char => (
+          <Character 
+          pplName={char.ppl.name} 
+          planName={char.plan.name} 
+          info={allInfo} 
+          key={char.ppl.id}
+          />
+        ))
+      }
     </div>
   )
 }
